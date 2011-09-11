@@ -16,9 +16,15 @@
  */
 
 require_once('sviews.class.php');
+
+$inizio_script = getmicrotime( );
+
+
 $s = new SViews();
-echo $s->render('sample.thtml',
-	array('var1' => 'value 1',
+$s->setUseCache(true);
+
+
+$context = 	array('var1' => 'value 1',
 			'var2' => 'value 2',
 			'myarray' => array('a' => 1,
 								'b' => 2,
@@ -26,7 +32,14 @@ echo $s->render('sample.thtml',
 			'myclass1' => new MyClass1(),
 			'myclass2' => new MyClass2(),
 			'myclass3' => new MyClass3()
-			));
+			);
+
+for($i =0 ; $i<1; $i++)  echo $s->render('sample.thtml', $context);
+
+
+			
+$fine_script = getmicrotime( );			
+echo "<p align=\"center\">Script eseguito in ".(substr($fine_script - $fine_script, 0,5))."secondi</p>";
 
 class MyClass1 {
 	private $baz = 'Oh my god!';
@@ -52,6 +65,11 @@ class MyClass3 {
 			return '(MyClass3: unknown value)';
 		}
 	}
+}
+
+function getmicrotime( ){
+	list( $usec, $sec) = explode(" ", microtime( ));
+	return ( ( float)$usec + ( float)$sec);
 }
 
 ?>

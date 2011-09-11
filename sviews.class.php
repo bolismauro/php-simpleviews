@@ -26,6 +26,8 @@ class SViews {
 	private $tag_rdelim="}";
 	private $tag_ldelim="{";
 	
+	private $useCache = false;
+	
 	public function __construct($template_dir="") {
 		//if (empty($template_dir)) {
 			$this->template_dir=dirname(__FILE__).DIRECTORY_SEPARATOR.$this->template_dir;
@@ -36,6 +38,11 @@ class SViews {
 	}
 	
 	public function render($template_name, array $context=array()) {
+		
+		//used to save the context's hash
+		$actual_hash = null;
+		
+		
 		if (empty($context)) echo '[warning: empty context provided]';
 		
 		$filename = $this->template_dir.DIRECTORY_SEPARATOR.$template_name;
@@ -43,6 +50,26 @@ class SViews {
 			throw new TemplateException("Template file does not exists: $filename");
 			
 		} else {
+			
+			// check if cache is enabled
+			if($this->useCache){
+				
+				//the cache is enable, try to get a previous calculated view
+				
+				$hash = SViews::getArrayHash($context);
+				
+				$fileName = $template_name.$hash.".cache";
+				
+				//save the hash so we don't need to calculate it again
+				$actual_hash = $hash;
+				
+				if(file_exists($this->cache_dir."/".$fileName)){
+					return file_get_contents($this->cache_dir."/".$fileName);
+				}	
+				
+			}
+			
+			
 			$template = file_get_contents($filename);
 			
 			/* VARIABLES */
@@ -70,9 +97,41 @@ class SViews {
 			$template = preg_replace_callback('/'.$this->tag_ldelim.'include\s+([a-zA-Z0-9\-\.]*)\s*'.$this->tag_rdelim.'/i', function($matches) use ($context, $current_template_dir) {
 					return SParser::_parseInclude($matches, $context, $current_template_dir);	
 				}, $template);
+			
+			
+				
+			//if the cache is enable let's save the view 
+			//for further uses
+			if($this->useCache){
 
+				$hash = $actual_hash;
+					
+				if(is_null($hash)){
+					$hash = SViews::getArrayHash($context);	
+				}
+				
+				$fileName = $template_name.$hash.".cache";
+				
+				$fileHandler = fopen($this->cache_dir."/".$fileName,"w");
+				fwrite($fileHandler,$template);
+				fclose($fileHandler);
+				
+			}	
+				
 			return $template;
 		}
+	}
+	
+	public function setUseCache($useCache){
+		if(is_bool($useCache)){
+			$this->useCache = $useCache;
+		}
+	}
+	
+	
+	public static function getArrayHash($array){
+		$str_arr = var_export($array,true);
+		return hash("MD5", $str_arr);
 	}
 	
 }
