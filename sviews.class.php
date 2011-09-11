@@ -30,7 +30,7 @@ class SViews {
 		if (empty($template_dir)) {
 			$this->template_dir=dirname(__FILE__).DIRECTORY_SEPARATOR.$this->template_dir;
 		} else {
-			$this->template_dir=dirname(__FILE__).DIRECTORY_SEPARATOR.$this->template_dir;
+			$this->template_dir=dirname(__FILE__).DIRECTORY_SEPARATOR.$template_dir;
 		}
 		$this->cache_dir=dirname(__FILE__).DIRECTORY_SEPARATOR.$this->cache_dir;
 	}
