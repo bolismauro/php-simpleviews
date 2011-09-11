@@ -37,6 +37,7 @@ class MyClass1 {
 
 class MyClass2 {
 	private $baz = 'Foo bar';
+	
 	public function baaz() {
 		return $this->baz;
 	}
