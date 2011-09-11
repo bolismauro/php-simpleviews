@@ -11,5 +11,7 @@
 
 {include included2.thtml}
 
+
+{include prova.js}
 </body>
 </html>

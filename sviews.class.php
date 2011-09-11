@@ -21,6 +21,7 @@
 class SViews {
 	private $template_dir="templates";
 	private $cache_dir="cache";
+	private $javascript_dir = "includes/javascript";
 	private $ldelim="{{";
 	private $rdelim="}}";
 	private $tag_rdelim="}";
@@ -92,6 +93,14 @@ class SViews {
 			
 			/* TAGS */
 			
+				
+			//Javascript includes - {include script.js}
+			$current_javascript_dir = $this->javascript_dir;
+			$template = preg_replace_callback('/'.$this->tag_ldelim.'include\s+([a-zA-Z0-9\-\.]*\.js)\s*'.$this->tag_rdelim.'/i', function($matches) use ($current_javascript_dir) {
+					return SParser::_parseJavascriptInclude($matches, $current_javascript_dir);	
+				}, $template);				
+				
+				
 			//Includes - {include father.html}
 			$current_template_dir = $this->template_dir;
 			$template = preg_replace_callback('/'.$this->tag_ldelim.'include\s+([a-zA-Z0-9\-\.]*)\s*'.$this->tag_rdelim.'/i', function($matches) use ($context, $current_template_dir) {
@@ -165,6 +174,12 @@ class SParser {
 	public static function _parseInclude($matches, $context, $template_dir) {
 		$s = new SViews($template_dir);
 		return $s->render($matches[1], $context);
+		
+	}
+
+	public static function _parseJavascriptInclude($matches, $template_dir) {
+		$js_path =  $template_dir."/".$matches[1];
+		return '<script type="text/javascript" src="'.$js_path.'"></script>';
 	}
 }
 

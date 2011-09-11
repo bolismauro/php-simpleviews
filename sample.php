@@ -21,7 +21,7 @@ $inizio_script = getmicrotime( );
 
 
 $s = new SViews();
-$s->setUseCache(true);
+$s->setUseCache(false);
 
 
 $context = 	array('var1' => 'value 1',
@@ -34,8 +34,8 @@ $context = 	array('var1' => 'value 1',
 			'myclass3' => new MyClass3()
 			);
 
-for($i =0 ; $i<1; $i++)  echo $s->render('sample.thtml', $context);
-
+//for($i =0 ; $i<1; $i++)  echo $s->render('sample.thtml', $context);
+echo $s->render('sample.thtml', $context);
 
 			
 $fine_script = getmicrotime( );			
