@@ -1,0 +1,11 @@
+<html>
+<head><title>Sample template</title>
+</head>
+<body>
+<h1>Hello World!</h1>
+<p>Value of <b>var1</b> is {{ var1}}.</p>
+
+{include included2.thtml}
+
+</body>
+</html>
