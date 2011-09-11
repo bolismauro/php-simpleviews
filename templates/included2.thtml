@@ -1,2 +1,2 @@
-<p style="color:red;">This is the foooooter</p>
+<p class="red">This is the foooooter. If this paragraph is red, a css file is loaded</p>
 <p>And value of var2 is {{var2}} in this context too.</p>

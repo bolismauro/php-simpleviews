@@ -22,6 +22,7 @@ class SViews {
 	private $template_dir="templates";
 	private $cache_dir="cache";
 	private $javascript_base_dir = "includes/javascript";
+	private $css_dir = "includes/css";
 	private $javascript_non_localized_script = "common";
 	private $language = 'it';
 	private $ldelim="{{";
@@ -71,8 +72,8 @@ class SViews {
 				//save the hash so we don't need to calculate it again
 				$actual_hash = $hash;
 				
-				if(file_exists($this->cache_dir."/".$fileName)){
-					return file_get_contents($this->cache_dir."/".$fileName);
+				if(file_exists($this->cache_dir.DIRECTORY_SEPARATOR.$fileName)){
+					return file_get_contents($this->cache_dir.DIRECTORY_SEPARATOR.$fileName);
 				}	
 				
 			}
@@ -101,17 +102,23 @@ class SViews {
 			/* TAGS */
 			
 				
-			//Javascript includes - {include script.js}
-			$current_javascript_dir = $this->javascript_base_dir."/".$this->javascript_non_localized_script;
-			$template = preg_replace_callback('/'.$this->tag_ldelim.'include\s+([a-zA-Z0-9\-\.]*\.js)\s*'.$this->tag_rdelim.'/i', function($matches) use ($current_javascript_dir) {
+			//Javascript includes - {include-js script.js}
+			$current_javascript_dir = $this->javascript_base_dir.DIRECTORY_SEPARATOR.$this->javascript_non_localized_script;
+			$template = preg_replace_callback('/'.$this->tag_ldelim.'include-js\s+([a-zA-Z0-9\-\.]*)\s*'.$this->tag_rdelim.'/i', function($matches) use ($current_javascript_dir) {
 					return SParser::_parseJavascriptInclude($matches, $current_javascript_dir);	
 				}, $template);				
 
-			//Javascript localized includes - {include-localized script.js}
-			$current_localized_javascript_dir = $this->javascript_base_dir."/".$this->language;
-			$template = preg_replace_callback('/'.$this->tag_ldelim.'include-localized\s+([a-zA-Z0-9\-\.]*\.js)\s*'.$this->tag_rdelim.'/i', function($matches) use ($current_localized_javascript_dir) {
+			//Javascript localized includes - {include-localized-js script.js}
+			$current_localized_javascript_dir = $this->javascript_base_dir.DIRECTORY_SEPARATOR.$this->language;
+			$template = preg_replace_callback('/'.$this->tag_ldelim.'include-localized-js\s+([a-zA-Z0-9\-\.]*)\s*'.$this->tag_rdelim.'/i', function($matches) use ($current_localized_javascript_dir) {
 					return SParser::_parseJavascriptInclude($matches, $current_localized_javascript_dir);	
 				}, $template);					
+
+			//CSS includes - {include-css style.css}
+			$current_css_dir = $this->css_dir;
+			$template = preg_replace_callback('/'.$this->tag_ldelim.'include-css\s+([a-zA-Z0-9\-\.]*)\s*'.$this->tag_rdelim.'/i', function($matches) use ($current_css_dir) {
+					return SParser::_parseCssInclude($matches, $current_css_dir);	
+				}, $template);				
 				
 				
 			//Includes - {include father.html}
@@ -134,7 +141,7 @@ class SViews {
 				
 				$fileName = $template_name.$hash.".cache";
 				
-				$fileHandler = fopen($this->cache_dir."/".$fileName,"w");
+				$fileHandler = fopen($this->cache_dir.DIRECTORY_SEPARATOR.$fileName,"w");
 				fwrite($fileHandler,$template);
 				fclose($fileHandler);
 				
@@ -191,9 +198,16 @@ class SParser {
 	}
 
 	public static function _parseJavascriptInclude($matches, $template_dir) {
-		$js_path =  $template_dir."/".$matches[1];
+		$js_path =  $template_dir.DIRECTORY_SEPARATOR.$matches[1];
 		return '<script type="text/javascript" src="'.$js_path.'"></script>';
 	}
+
+	public static function _parseCssInclude($matches, $template_dir) {
+		$css_path =  $template_dir.DIRECTORY_SEPARATOR.$matches[1];
+		return '<style type="text/css"> @import url('.$css_path.'); </style>';
+		//return "<link rel='stylesheet' href='".$css_path."' />";
+	}
+
 }
 
 class TemplateException extends RuntimeException { }

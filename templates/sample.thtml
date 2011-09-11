@@ -1,5 +1,10 @@
 <html>
 <head><title>Sample template</title>
+
+{include-js buttonAction.js}
+{include-localized-js buttonAction.js}
+{include-css style.css}
+
 </head>
 <body>
 <h1>Hello World!</h1>
@@ -12,8 +17,6 @@
 {include included2.thtml}
 
 
-{include buttonAction.js}
-{include-localized buttonAction.js}
 <input type="button" onclick="buttonClicked()" value="click to use javascript" />
 <input type="button" onclick="localizedButtonClicked()" value="click to use javascript-localized" />
 </body>
