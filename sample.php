@@ -39,7 +39,7 @@ for($i =0 ; $i<1; $i++)  echo $s->render('sample.thtml', $context);
 
 			
 $fine_script = getmicrotime( );			
-echo "<p align=\"center\">Script eseguito in ".(substr($fine_script - $fine_script, 0,5))."secondi</p>";
+echo "<p align=\"center\">Script eseguito in ".(substr($fine_script - $inizio_script, 0,5))."secondi</p>";
 
 class MyClass1 {
 	private $baz = 'Oh my god!';
