@@ -3,7 +3,11 @@
 </head>
 <body>
 <h1>Hello World!</h1>
-<p>Value of <b>var1</b> is {{ var1}}.</p>
+<p>The value of <b>var1</b> is {{ var1 }}.</p>
+<p>The value of <b>myarray.b</b> (as hash map) is {{ myarray.b }}</p>
+<p>The value of <b>myclass1.baz</b> (as myclass1->getBaz()) is {{ myclass1.baz }}</p>
+<p>The value of <b>myclass2.baaz</b> (as myclass2->baaz()) is {{ myclass2.baaz }}</p>
+<p>The value of <b>myclass3.baaaz</b> (as myclass3->get('baaaz')) is {{ myclass3.baaaz }}</p>
 
 {include included2.thtml}
 
