@@ -13,6 +13,8 @@
 
 
 {include buttonAction.js}
+{include-localized buttonAction.js}
 <input type="button" onclick="buttonClicked()" value="click to use javascript" />
+<input type="button" onclick="localizedButtonClicked()" value="click to use javascript-localized" />
 </body>
 </html>

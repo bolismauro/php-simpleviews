@@ -21,7 +21,9 @@
 class SViews {
 	private $template_dir="templates";
 	private $cache_dir="cache";
-	private $javascript_dir = "includes/javascript";
+	private $javascript_base_dir = "includes/javascript";
+	private $javascript_non_localized_script = "common";
+	private $language = 'it';
 	private $ldelim="{{";
 	private $rdelim="}}";
 	private $tag_rdelim="}";
@@ -36,6 +38,11 @@ class SViews {
 			$this->template_dir=dirname(__FILE__).DIRECTORY_SEPARATOR.$template_dir;
 		}*/
 		$this->cache_dir=dirname(__FILE__).DIRECTORY_SEPARATOR.$this->cache_dir;
+		
+		/**
+		 * TODO manage localization
+		 */
+		$this->language = 'it';
 	}
 	
 	public function render($template_name, array $context=array()) {
@@ -95,10 +102,16 @@ class SViews {
 			
 				
 			//Javascript includes - {include script.js}
-			$current_javascript_dir = $this->javascript_dir;
+			$current_javascript_dir = $this->javascript_base_dir."/".$this->javascript_non_localized_script;
 			$template = preg_replace_callback('/'.$this->tag_ldelim.'include\s+([a-zA-Z0-9\-\.]*\.js)\s*'.$this->tag_rdelim.'/i', function($matches) use ($current_javascript_dir) {
 					return SParser::_parseJavascriptInclude($matches, $current_javascript_dir);	
 				}, $template);				
+
+			//Javascript localized includes - {include-localized script.js}
+			$current_localized_javascript_dir = $this->javascript_base_dir."/".$this->language;
+			$template = preg_replace_callback('/'.$this->tag_ldelim.'include-localized\s+([a-zA-Z0-9\-\.]*\.js)\s*'.$this->tag_rdelim.'/i', function($matches) use ($current_localized_javascript_dir) {
+					return SParser::_parseJavascriptInclude($matches, $current_localized_javascript_dir);	
+				}, $template);					
 				
 				
 			//Includes - {include father.html}
